@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function  Booking() {
+function Booking() {
   const [values, setValues] = useState({
     FirstName: "",
     LastName: "",
@@ -12,20 +12,20 @@ function  Booking() {
   const [errors, setErrors] = useState({});
 
   function validation(newValues) {
-    console.log("test",values, errors);
+    console.log("test", values, errors);
 
     let error = {};
 
-    const PhoneNumber_pattern = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/
-    
-    const Email_pattern = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/
+    const PhoneNumber_pattern = /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/;
+
+    const Email_pattern = /^\w+([.-]?\w+)@\w+([.-]?\w+)(\.\w{2,3})+$/;
 
     if (newValues.FirstName === "") {
       error.FirstName = "Name should not be empty";
     } else {
       error.FirstName = "";
     }
-    
+
     if (newValues.LastName === "") {
       error.LastName = "Last name should not be empty";
     } else {
@@ -37,40 +37,61 @@ function  Booking() {
     } else if (!PhoneNumber_pattern.test(newValues.PhoneNumber)) {
       error.PhoneNumber = "Enter the proper PhoneNumber";
     }
-    
+    if(newValues.Address===""){
+      error.Address="All fields are mandatory";
+    }
+
     if (!Email_pattern.test(newValues.Email)) {
-      error.Email = "Enter the proper Email ID"
+      error.Email = "Enter the proper Email ID";
     } else {
       error.Email = "";
     }
-    
+
     setErrors(error);
     setValues(newValues);
   }
 
-  const handleSubmit = (event) => {
+  let handleSubmit = (event) => {
     console.log(values);
     event.preventDefault();
     validation(values);
+    fetch("http://localhost:3001/task1", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
   };
 
+  // const handleSubmit = (event) => {
+  //   console.log(values);
+  //   event.preventDefault();
+  //   validation(values);
+  // };
+  
+
   const validateEmail = (email) => {
-    validation({ ...values, Email: email});
+    validation({ ...values, Email: email });
   };
 
   const validateFname = (fname) => {
-    validation({ ...values, FirstName: fname});
+    validation({ ...values, FirstName: fname });
   };
 
-  const validatelLname=(lname)=>{
-    validation({...values,LastName:lname});
+  const validatelLname = (lname) => {
+    validation({ ...values, LastName: lname });
   };
-  const validatePh=(Ph)=>{
-    validation({...values,PhoneNumber:Ph});
+  const validatePh = (Ph) => {
+    validation({ ...values, PhoneNumber: Ph });
   };
+  const aAddress=(add)=>{
+    validation({...values,Address:add});
+  };
+ 
 
   return (
-    <div className="d-flex justify-content-center align-items-center bg-secondary vh-100">
+    <div className="container-fluid d-flex justify-content-center align-items-center bg-secondary vh-100">
       <div className="bg-white p-3 rounded w-25">
         <h2 style={{ color: "green" }}>Event Booking</h2>
         <form action="" onSubmit={handleSubmit}>
@@ -142,7 +163,12 @@ function  Booking() {
               type="Address"
               placeholder="Address"
               name="Address"
-              onChange={(event) => {}}
+              onChange={
+                (event) => {
+                  aAddress(event.target.value);
+                }
+                // Address(event.target.value);
+              }
               className="form-control rounded-0"
             />
           </div>
